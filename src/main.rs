@@ -32,6 +32,7 @@ macro_rules! slice_as_array {
 extern crate esp32_sys;
 
 mod wrapper;
+mod wifi;
 
 use core::panic::PanicInfo;
 use core::ptr;
@@ -59,15 +60,15 @@ pub fn app_main() {
     rust_blink_and_write();
 }
 
-fn start_wifi() {
-    print("Initiating wifi: ");
-    let wifi_init_config: wifi_init_config_t = wifi_init_config_t {
-        event_handler: None,
-        osi_funcs:
-    };
-    let esp_err = wrapper::esp_wifi_init(wifi_init_config);
-    print_error_code(esp_err);
-}
+//fn start_wifi() {
+//    print("Initiating wifi: ");
+//    let wifi_init_config: wifi_init_config_t = wifi_init_config_t {
+//        event_handler: None,
+//        osi_funcs:
+//    };
+//    let esp_err = wrapper::esp_wifi_init(wifi_init_config);
+//    print_error_code(esp_err);
+//}
 
 fn setup_wifi() {
     print("Setting up wifi: ");

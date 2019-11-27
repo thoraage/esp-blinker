@@ -1,6 +1,6 @@
 extern crate esp32_sys;
 
-use esp32_sys::{gpio_num_t, gpio_mode_t, esp_err_t, uart_port_t, uart_config_t, wifi_interface_t, wifi_config_t};
+use esp32_sys::{gpio_num_t, gpio_mode_t, esp_err_t, uart_port_t, uart_config_t, wifi_interface_t, wifi_config_t, wifi_mode_t};
 
 macro_rules! re_export {
 //    () => {};
@@ -25,7 +25,8 @@ macro_rules! re_export {
 }
 
 re_export! {
-    pub fn esp_wifi_init(config: *const wifi_init_config_t) -> esp_err_t;
+//    pub fn esp_wifi_init(config: *const wifi_init_config_t) -> esp_err_t;
+    pub fn esp_wifi_get_mode(mode: *mut wifi_mode_t) -> esp_err_t;
 }
 
 re_export! {

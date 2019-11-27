@@ -23,7 +23,7 @@ rustflags = [
   "-C", "link-arg=-Lbuild/esp-tls",  "-C", "link-arg=-lesp-tls",
   "-C", "link-arg=-Lbuild/esp32",  "-C", "link-arg=-lesp32",
   "-C", "link-arg=esp-idf/components/esp32/libhal.a",
-  "-C", "link-arg=-Lesp-idf/components/esp32/lib", "-C", "link-arg=-lcore",
+  "-C", "link-arg=-Lesp-idf/components/esp32/lib", "-C", "link-arg=-lcore", "-C", "link-arg=-lnet80211",
 
   "-C", "link-arg=-Lesp-idf/components/esp32/ld",
   "-C", "link-arg=-Tesp32_out.ld",
