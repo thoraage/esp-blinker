@@ -33,10 +33,11 @@ extern crate esp32_sys;
 
 mod wrapper;
 mod wifi;
+mod output;
 
 use core::panic::PanicInfo;
-use core::ptr;
 use esp32_sys::*;
+use output::Output;
 //use core::str::Chars;
 
 #[panic_handler]
@@ -71,7 +72,7 @@ pub fn app_main() {
 //}
 
 fn setup_wifi() {
-    print("Setting up wifi: ");
+//    output::print("Setting up wifi: ");
     let mut wifi_config: wifi_config_t = wifi_config_t {
         sta: wifi_sta_config_t {
             ssid: *slice_as_array!("Luftslottet".as_bytes(), [u8; 32]).expect("bad hash length"),
@@ -97,34 +98,7 @@ fn setup_wifi() {
 //    let chars: &dyn Iterator<Item=char> = &iter.map(aaaa).collect();
 //    let a: Chars = chars;
 //    let a: &str = &chars.as_str();
-    print_error_code(esp_err)
-}
-
-fn print_error_code(esp_err: esp_err_t) {
-    let resp = match esp_err as u32 {
-        ESP_ERR_WIFI_NOT_INIT => "ESP_ERR_WIFI_NOT_INIT",
-        ESP_ERR_WIFI_NOT_STARTED => "ESP_ERR_WIFI_NOT_STARTED",
-        ESP_ERR_WIFI_NOT_STOPPED => "ESP_ERR_WIFI_NOT_STOPPED",
-        ESP_ERR_WIFI_IF => "ESP_ERR_WIFI_IF",
-        ESP_ERR_WIFI_MODE => "ESP_ERR_WIFI_MODE",
-        ESP_ERR_WIFI_STATE => "ESP_ERR_WIFI_STATE",
-        ESP_ERR_WIFI_CONN => "ESP_ERR_WIFI_CONN",
-        ESP_ERR_WIFI_NVS => "ESP_ERR_WIFI_NVS",
-        ESP_ERR_WIFI_MAC => "ESP_ERR_WIFI_MAC",
-        ESP_ERR_WIFI_SSID => "ESP_ERR_WIFI_SSID",
-        ESP_ERR_WIFI_PASSWORD => "ESP_ERR_WIFI_PASSWORD",
-        ESP_ERR_WIFI_TIMEOUT => "ESP_ERR_WIFI_TIMEOUT",
-        ESP_ERR_WIFI_WAKE_FAIL => "ESP_ERR_WIFI_WAKE_FAIL",
-        ESP_ERR_WIFI_WOULD_BLOCK => "ESP_ERR_WIFI_WOULD_BLOCK",
-        ESP_ERR_WIFI_NOT_CONNECT => "ESP_ERR_WIFI_NOT_CONNECT",
-        _ => "Unknown"
-    };
-    print(resp);
-    print("\n")
-}
-
-fn print(test_str: &str) {
-    wrapper::uart_write_bytes(UART_NUM, test_str.as_ptr() as *const _, test_str.len());
+//    print_error_code(esp_err)
 }
 
 fn rust_blink_and_write() {
@@ -132,23 +106,10 @@ fn rust_blink_and_write() {
     /* Set the GPIO as a push/pull output */
     wrapper::gpio_set_direction(BLINK_GPIO, gpio_mode_t_GPIO_MODE_OUTPUT);
 
-    /* Configure parameters of an UART driver,
- * communication pins and install the driver */
-    let uart_config = uart_config_t {
-        baud_rate: 115200,
-        data_bits: uart_word_length_t_UART_DATA_8_BITS,
-        parity: uart_parity_t_UART_PARITY_DISABLE,
-        stop_bits: uart_stop_bits_t_UART_STOP_BITS_1,
-        flow_ctrl: uart_hw_flowcontrol_t_UART_HW_FLOWCTRL_DISABLE,
-        rx_flow_ctrl_thresh: 0,
-        use_ref_tick: false,
-    };
+    let output = Output::new(UART_NUM, ECHO_TEST_TXD, ECHO_TEST_RXD,
+                             ECHO_TEST_RTS, ECHO_TEST_CTS, BUF_SIZE);
 
-    wrapper::uart_param_config(UART_NUM, &uart_config);
-    wrapper::uart_set_pin(UART_NUM, ECHO_TEST_TXD, ECHO_TEST_RXD, ECHO_TEST_RTS, ECHO_TEST_CTS);
-    wrapper::uart_driver_install(UART_NUM, BUF_SIZE * 2, 0, 0, ptr::null_mut(), 0);
-
-    setup_wifi();
+    wifi::begin(&output, "Luftslottet", "Uvelkommen(0");
 
     loop {
         /* Blink off (output low) */
@@ -159,7 +120,7 @@ fn rust_blink_and_write() {
 
         // Write data to UART.
         let test_str = "This is a test string.\n";
-        print(test_str);
+        output.print(test_str);
 
         /* Blink on (output high) */
         wrapper::gpio_set_level(BLINK_GPIO, 1);
