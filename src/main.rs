@@ -71,25 +71,25 @@ pub fn app_main() {
 //    print_error_code(esp_err);
 //}
 
-fn setup_wifi() {
+//fn setup_wifi() {
 //    output::print("Setting up wifi: ");
-    let mut wifi_config: wifi_config_t = wifi_config_t {
-        sta: wifi_sta_config_t {
-            ssid: *slice_as_array!("Luftslottet".as_bytes(), [u8; 32]).expect("bad hash length"),
-            password: *slice_as_array!("Uvelkommen(0".as_bytes(), [u8; 64]).expect("bad hash length"),
-            scan_method: wifi_scan_method_t_WIFI_FAST_SCAN,
-            bssid_set: false,
-            bssid: [0, 0, 0, 0, 0, 0],
-            channel: 0,
-            listen_interval: 0,
-            sort_method: wifi_sort_method_t_WIFI_CONNECT_AP_BY_SIGNAL,
-            threshold: wifi_fast_scan_threshold_t {
-                rssi: 0,
-                authmode: wifi_auth_mode_t_WIFI_AUTH_OPEN
-            }
-        }
-    };
-    let esp_err = wrapper::esp_wifi_set_config(esp_interface_t_ESP_IF_WIFI_STA, &mut wifi_config);
+//    let mut wifi_config: wifi_config_t = wifi_config_t {
+//        sta: wifi_sta_config_t {
+//            ssid: *slice_as_array!("Luftslottet".as_bytes(), [u8; 32]).expect("bad hash length"),
+//            password: *slice_as_array!("Uvelkommen(0".as_bytes(), [u8; 64]).expect("bad hash length"),
+//            scan_method: wifi_scan_method_t_WIFI_FAST_SCAN,
+//            bssid_set: false,
+//            bssid: [0, 0, 0, 0, 0, 0],
+//            channel: 0,
+//            listen_interval: 0,
+//            sort_method: wifi_sort_method_t_WIFI_CONNECT_AP_BY_SIGNAL,
+//            threshold: wifi_fast_scan_threshold_t {
+//                rssi: 0,
+//                authmode: wifi_auth_mode_t_WIFI_AUTH_OPEN
+//            }
+//        }
+//    };
+//    let esp_err = wrapper::esp_wifi_set_config(esp_interface_t_ESP_IF_WIFI_STA, &mut wifi_config);
 //    let err_bytes = esp_err.to_be_bytes();
 //    let error_chars = Chars { iter:  err_bytes.iter() };
 //    print(error_chars.as_str());
@@ -99,7 +99,7 @@ fn setup_wifi() {
 //    let a: Chars = chars;
 //    let a: &str = &chars.as_str();
 //    print_error_code(esp_err)
-}
+//}
 
 fn rust_blink_and_write() {
     wrapper::gpio_pad_select_gpio(BLINK_GPIO as u8);
